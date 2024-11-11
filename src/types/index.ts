@@ -223,10 +223,18 @@ export type BedrockAnthropicParsedChunk = {
   "amazon-bedrock-invocationMetrics"?: BedrockAnthropicMetrics;
 };
 
+// AWS BEDROCK LLAMA3
+
+// Define the Llama 3 model IDs provided by AWS Bedrock
+export enum BedrockLlama3SupportedLLMs {
+  LLAMA_3 = "MetaLLaMA-3-v1:0",
+}
+
 // GENERAL
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
 
 export type SupportedLLMs =
   | { type: "OpenAI"; model: OpenAISupportedLLMs }
-  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs };
+  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs }
+  | { type: "BedrockLlama3"; model: BedrockLlama3SupportedLLMs };
