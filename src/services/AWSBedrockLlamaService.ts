@@ -12,7 +12,7 @@ import {
   } from "@aws-sdk/client-bedrock-runtime";
   import { ClientService } from "./ClientService";
 
-export class AWSBedrockLlama implements ClientService
+export class AWSBedrockLlamaService implements ClientService
 {
     private bedrock: BedrockRuntimeClient;
 

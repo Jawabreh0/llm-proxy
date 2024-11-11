@@ -2,6 +2,7 @@ import { ProviderFinder } from "./middleware/ProviderFinder";
 import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
 import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicService";
+import { AWSBedrockLlamaService } from "./services/AWSBedrockLlamaService";
 import { OpenAIService } from "./services/OpenAIService";
 import {
   Messages,
@@ -10,6 +11,7 @@ import {
   Providers,
   OpenAIMessages,
   BedrockAnthropicMessages,
+  BedrockLlamaMessage,
 } from "./types";
 
 // Define the credentials interface for flexibility
@@ -32,7 +34,7 @@ export async function generateLLMResponse(
   const provider = ProviderFinder.getProvider(model);
 
   // Initialize the correct service based on the provider
-  let service: OpenAIService | AwsBedrockAnthropicService;
+  let service: OpenAIService | AwsBedrockAnthropicService | AWSBedrockLlama;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
       throw new Error("OpenAI API key is required for OpenAI models.");
