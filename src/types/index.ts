@@ -51,7 +51,7 @@ export type OpenAIMessage =
 export type OpenAIMessages = OpenAIMessage[];
 
 export enum OpenAISupportedLLMs {
-  GPT_4_O_LAEST = "chatgpt-4o-latest", // points to the latest version of gpt-4o
+  GPT_4_O_LATEST = "chatgpt-4o-latest", // points to the latest version of gpt-4o
   GPT_4_O = "gpt-4o",
   GPT_4_O_MINI = "gpt-4o-mini",
   GPT_4_TURBO = "gpt-4-turbo",
@@ -227,7 +227,8 @@ export type BedrockAnthropicParsedChunk = {
 
 // Define the Llama 3 model IDs provided by AWS Bedrock
 export enum BedrockLlama3SupportedLLMs {
-  LLAMA_3 = "MetaLLaMA-3-v1:0",
+  LLAMA_3_8B = "meta.llama3-8b-instruct-v1:0",
+  LLAMA_3_70B = "meta.llama3-70b-instruct-v1:0",
 }
 
 // GENERAL
