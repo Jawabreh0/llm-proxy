@@ -223,10 +223,138 @@ export type BedrockAnthropicParsedChunk = {
   "amazon-bedrock-invocationMetrics"?: BedrockAnthropicMetrics;
 };
 
+// AWS BEDROCK LLAMA
+
+export enum BedrockLlamaSupportedLLMs {
+  LLAMA_3_2_90B = "llama.llama-3-2-90b-20240307-v1:0",
+  LLAMA_3_2_11B = "llama.llama-3-2-11b-20240229-v1:0",
+  LLAMA_3_2_3B = "llama.llama-3-2-3b-20240229-v1:0",
+  LLAMA_3_2_1B = "llama.llama-3-2-1b-20241022-v2:0",
+  LLAMA_3_1_405B = "llama.llama-3-1-405b-20240307-v1:0",
+  LLAMA_3_1_70B = "llama.llama-3-1-70b-20240229-v1:0",
+  LLAMA_3_1_8B = "llama.llama-3-1-8b-20241022-v2:0",
+}
+
+export enum BedrockLlamaContentType {
+  TEXT = "text",
+  IMAGE = "image",
+}
+
+export enum BedrockLlamaMessageRole {
+  USER = "user",
+  ASSISTANT = "assistant",
+}
+
+export interface BedrockLlamaTextContent {
+  type: BedrockLlamaContentType.TEXT;
+  text: string;
+}
+
+interface BedrockLlamaImageContent {
+  type: BedrockLlamaContentType.IMAGE;
+  source: {
+    type: string;
+    media_type: string;
+    data: string;
+  };
+}
+
+export type BedrockLlamaContent =
+  | BedrockLlamaTextContent
+  | BedrockLlamaImageContent;
+
+export interface BedrockLlamaMessage {
+  role: BedrockLlamaMessageRole;
+  content: BedrockLlamaContent[];
+}
+
+export interface BedrockLlamaFunctionCall {
+  id: string;
+  name: string;
+  arguments: string;
+}
+
+export type BedrockLlamaMessages = BedrockLlamaMessage[];
+
+export interface BedrockLlamaOptions {
+  outputTokenLength: number;
+  temperature: number;
+  systemPrompt: string;
+  messages: BedrockLlamaMessages;
+  tools: any;
+}
+
+export interface BedrockLlamaUsage {
+  input_tokens: number;
+  output_tokens: number;
+}
+
+export interface BedrockLlamaResponse {
+  id: string;
+  type: "message";
+  role: BedrockLlamaMessageRole;
+  model: string; //I might need to change this to string
+  content: BedrockLlamaContent[];
+  stop_reason: string | null; 
+  stop_sequence: string | null;
+  usage: BedrockLlamaUsage;
+  created_at?: number; 
+  error?: { 
+    type: string;
+    message: string;
+  };
+}
+
+
+export interface BedrockLlamaMessageChunk {
+  id: string;
+  type: "message";
+  model: string;
+  role: BedrockLlamaMessageRole;
+  content: BedrockLlamaContent[];
+  stop_reason: string | null;
+  stop_sequence: string | null;
+  usage: BedrockLlamaUsage;
+}
+
+export interface BedrockLlamaContentBlock {
+  type: string;
+  text: string;
+  name?: string;
+  id?: string;
+  partial_json?: string;
+}
+
+export interface BedrockLlamaMetrics {
+  inputTokenCount: number;
+  outputTokenCount: number;
+  invocationLatency: number;
+  firstByteLatency: number;
+}
+
+export type BedrockLlamaParsedChunk = {
+  type: string;
+  message?: BedrockLlamaMessageChunk;
+  content_block?: BedrockLlamaContentBlock;
+  delta?: BedrockLlamaContentBlock;
+  "amazon-bedrock-invocationMetrics"?: BedrockLlamaMetrics;
+};
+
+export interface BedrockLlamaError {
+  type: string;
+  message: string;
+  code?: string;
+  param?: string;
+  status?: number;
+}
+
 // GENERAL
-export type Messages = OpenAIMessages | BedrockAnthropicMessages;
-export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
+export type Messages = OpenAIMessages | BedrockAnthropicMessages | BedrockLlamaMessages;
+export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse | BedrockLlamaResponse;
+export type LlmError = BedrockLlamaError;
+export type Chunks = BedrockLlamaParsedChunk | BedrockAnthropicParsedChunk;
 
 export type SupportedLLMs =
   | { type: "OpenAI"; model: OpenAISupportedLLMs }
-  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs };
+  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs }
+  | { type: "BedrockLlama"; model: BedrockLlamaSupportedLLMs };

@@ -1,5 +1,5 @@
 import {
-  BedrockAnthropicParsedChunk,
+  Chunks,
   LLMResponse,
   Messages,
   SupportedLLMs,
@@ -25,5 +25,5 @@ export interface ClientService {
     systemPrompt?: string,
     tools?: any,
     stream?: boolean
-  ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
+  ): AsyncGenerator<Chunks, void, unknown>;
 }
