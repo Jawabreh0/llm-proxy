@@ -11,7 +11,7 @@ import {
   Providers,
   OpenAIMessages,
   BedrockAnthropicMessages,
-  BedrockLlamaMessage,
+  BedrockLlamaMessages,
 } from "./types";
 
 // Define the credentials interface for flexibility
@@ -34,7 +34,7 @@ export async function generateLLMResponse(
   const provider = ProviderFinder.getProvider(model);
 
   // Initialize the correct service based on the provider
-  let service: OpenAIService | AwsBedrockAnthropicService | AWSBedrockLlama;
+  let service: OpenAIService | AwsBedrockAnthropicService | AWSBedrockLlamaService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
       throw new Error("OpenAI API key is required for OpenAI models.");
@@ -50,7 +50,19 @@ export async function generateLLMResponse(
       awsConfig.secretAccessKey,
       awsConfig.region
     );
-  } else {
+  }
+  else if (provider === Providers.LLAMA_BEDROCK) {
+    const awsConfig = credentials.awsConfig;
+    if (!awsConfig) {
+      throw new Error("AWS credentials are required for Llama models.");
+    }
+    service = new AWSBedrockLlamaService(
+      awsConfig.accessKeyId,
+      awsConfig.secretAccessKey,
+      awsConfig.region
+    );
+  }  
+  else {
     throw new Error("Unsupported provider");
   }
 
@@ -60,6 +72,7 @@ export async function generateLLMResponse(
       ? InputFormatAdapter.adaptMessages(messages, provider)
       : messages;
 
+  // TODO: Add support for bedrock llama here
   const response = await service.generateCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)
@@ -89,7 +102,7 @@ export async function generateLLMStreamResponse(
 ): Promise<AsyncGenerator<OpenAIResponse>> {
   const provider = ProviderFinder.getProvider(model);
 
-  let service: OpenAIService | AwsBedrockAnthropicService;
+  let service: OpenAIService | AwsBedrockAnthropicService | AWSBedrockLlamaService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
       throw new Error("OpenAI API key is required for OpenAI models.");
@@ -105,7 +118,19 @@ export async function generateLLMStreamResponse(
       awsConfig.secretAccessKey,
       awsConfig.region
     );
-  } else {
+  }
+  else if (provider === Providers.LLAMA_BEDROCK) {
+    const awsConfig = credentials.awsConfig;
+    if (!awsConfig) {
+      throw new Error("AWS credentials are required for Llama models.");
+    }
+    service = new AWSBedrockLlamaService(
+      awsConfig.accessKeyId,
+      awsConfig.secretAccessKey,
+      awsConfig.region
+    );
+  }
+  else {
     throw new Error("Unsupported provider");
   }
 
@@ -114,6 +139,7 @@ export async function generateLLMStreamResponse(
       ? InputFormatAdapter.adaptMessages(messages, provider)
       : messages;
 
+  // TODO: Add support for bedrock llama stream here
   const stream = service.generateStreamCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)

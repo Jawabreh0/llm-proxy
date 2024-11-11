@@ -2,7 +2,9 @@
 export enum Providers {
   OPENAI = "OpenAI",
   ANTHROPIC_BEDROCK = "AnthropicBedrock",
+  LLAMA_BEDROCK = "LlamaBedrock",
   COHERE_BEDROCK = "CohereBedrock", // NOTE: not supported  yet
+  
 }
 
 // OPENAI
